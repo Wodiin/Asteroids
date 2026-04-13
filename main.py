@@ -59,6 +59,13 @@ def main():
                 log_event("player_hit")
                 print("Game over!")
                 return sys.exit()
+        # Check for collisions between shots and asteroids
+        for asteroid in asteroids:
+            for shot in shots:
+                if shot.collides_with(asteroid):
+                    log_event("asteroid_shot")
+                    asteroid.split()
+                    shot.kill()
 
         # Update and draw all sprites
         updatable.update(dt)

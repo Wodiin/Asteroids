@@ -27,7 +27,7 @@ class Player(CircleShape):
     def rotate(self, dt):
         self.rotation += con.PLAYER_TURN_SPEED * dt
 
-    # Updates the player's position and rotation based on user input
+    # Updates the player's position and handles input for movement and shooting
     def update(self, dt):
         keys = pygame.key.get_pressed()
     
@@ -41,6 +41,8 @@ class Player(CircleShape):
             self.move(-dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
+        
+        self.shoot_cooldown -= dt
     
     # Moves the player in the direction it is currently facing
     def move(self, dt):
@@ -50,5 +52,9 @@ class Player(CircleShape):
         self.position += rotated_with_speed_vector
     
     def shoot(self):
+        if self.shoot_cooldown > 0:
+            return
+        self.shoot_cooldown = con.PLAYER_SHOOT_COOLDOWN_SECONDS
         shot = Shot(self.position.x, self.position.y, con.SHOT_RADIUS)
         shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * con.PLAYER_SHOOT_SPEED
+     

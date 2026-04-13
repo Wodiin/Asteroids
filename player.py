@@ -1,12 +1,14 @@
 import pygame
 from circleshape import CircleShape
 import constants as con
+from shot import Shot
 
 # Player class that inherits from CircleShape
 class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, con.PLAYER_RADIUS)
         self.rotation = 0
+        self.shoot_cooldown = 0
 
     # Returns the vertices of the triangle representing the player
     def triangle(self):
@@ -37,6 +39,8 @@ class Player(CircleShape):
             self.move(dt)
         if keys[pygame.K_s]:
             self.move(-dt)
+        if keys[pygame.K_SPACE]:
+            self.shoot()
     
     # Moves the player in the direction it is currently facing
     def move(self, dt):
@@ -44,3 +48,7 @@ class Player(CircleShape):
         rotated_vector = unit_vector.rotate(self.rotation)
         rotated_with_speed_vector = rotated_vector * con.PLAYER_SPEED * dt
         self.position += rotated_with_speed_vector
+    
+    def shoot(self):
+        shot = Shot(self.position.x, self.position.y, con.SHOT_RADIUS)
+        shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * con.PLAYER_SHOOT_SPEED
